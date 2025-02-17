@@ -31,40 +31,12 @@ Activate a virtual environment (`myenv`)
 .\myenv\Scripts\Activate.ps1
 ```
 
-To start the server:
-
-```bash
-python manage.py runserver
-```
-
----
-
-Running Migrations:
-
-```bash
-python manage.py migrate
-```
-
----
-
-## Running Tests
-
-To run tests for a specific app (e.g., `inmaticpart2`), use:
-
-```bash
-python manage.py test inmaticpart2.tests
-```
-
----
-
 ## Running a Specific Test 
 
 
 ```bash
-coverage run manage.py test inmaticpart2.tests.unit.service.accounting_invoice_service_test
+coverage run manage.py test inmaticParte3Debugging.tests.service.accounting_invoice_service_test
 ```
-
----
 
 ## Generating Test Coverage Report in HTML
 
@@ -77,7 +49,7 @@ Install the `coverage` package if it's not already installed:
 Run the tests with coverage:
 
    ```bash
-   coverage run --source=inmaticpart2 manage.py test inmaticpart2
-   coverage report
-   coverage html
+coverage run manage.py test inmaticParte3Debugging.tests.service.accounting_invoice_service_test
+coverage report
+coverage html
    ```
