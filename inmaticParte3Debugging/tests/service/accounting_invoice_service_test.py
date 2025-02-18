@@ -8,7 +8,9 @@ class TestAccountingInvoiceService(unittest.TestCase):
             'items': [
                 {'price': 100, 'quantity': 2},  # Total = 200 (before VAT)
                 {'price': 50, 'quantity': 3},   # Total = 150 (before VAT)
-            ]
+            ],
+            'base_amount': 1000,  # Base amount
+            'vat_amount': 210  # VAT (21% of 1000)
         }
 
     def test_calculate_totals(self):
@@ -30,3 +32,14 @@ class TestAccountingInvoiceService(unittest.TestCase):
         print(f"Returned VAT: {result['vat']}")
         print(f"Returned Total: {result['total']}")
         print("-------------------\n")
+
+    def test_calculate_expected_credit_for_provider(self):
+        
+        provider = AccountingInvoiceService.create_accounting_entry(self.invoice)
+
+        # Expected credit for the Provider (base_amount + vat_amount)
+        expected_provider_credit = self.invoice['base_amount'] + self.invoice['vat_amount'] # expected credit would be 1000 + 210 = 1210
+
+        self.assertEqual(provider[2]['account'], '4000')  # Provider account
+        self.assertEqual(provider[2]['debit'], 0)
+        self.assertEqual(provider[2]['credit'], expected_provider_credit)  # Expected credit: 1210
