@@ -1,32 +1,32 @@
 import unittest
-
 from inmaticParte3Debugging.service.accounting_invoice_service import AccountingInvoiceService
 
 class TestAccountingInvoiceService(unittest.TestCase):
 
     def setUp(self):
-        # Setup for tests: Use the same invoice for both methods
         self.invoice = {
             'items': [
                 {'price': 100, 'quantity': 2},  # Total = 200 (before VAT)
-                {'price': 150, 'quantity': 1},  # Total = 150 (before VAT)
+                {'price': 50, 'quantity': 3},   # Total = 150 (before VAT)
             ]
         }
 
-    def test_calculate_totals_with_duplicate_iva(self):
-        # Running the method with duplicate VAT for each item
+    def test_calculate_totals(self):
         result = AccountingInvoiceService.calculate_totals(self.invoice)
-        
-        # Correct VAT and total after duplicate VAT handling
-        self.assertEqual(result['vat'], 88.935)  # VAT calculated as 21% of 423.5 (sum of item + VAT)
-        self.assertEqual(result['total'], 512.435)  # Total = sum + VAT (423.5 + 88.935)
-    
-    def test_calculate_totals_correctly(self):
-        # Running the method with correct calculation
-        result = AccountingInvoiceService.calculate_totals_correctly(self.invoice)
-        
-        # Correct VAT and total after calculation
-        self.assertEqual(result['vat'], 73.5)  # VAT is 21% of 350 (200 + 150)
-        self.assertEqual(result['total'], 423.5)  # Total = 350 + 73.5 (VAT)
-    
 
+        # Expected calculation
+        expected_subtotal = (100 * 2) + (50 * 3)  # Total before VAT 
+        expected_vat = expected_subtotal * 0.21  # VAT at 21% (350 * 0.21 = 73.5)
+        expected_total = expected_subtotal + expected_vat  # Total with VAT (350 + 73.5 = 423.5)
+
+        # Assert that the returned result matches the expected values
+        self.assertEqual(result['vat'], expected_vat)  # Expected value: 73.5
+        self.assertEqual(result['total'], expected_total)  # Expected value: 423.5
+        self.assertEqual(result['total'] - result['vat'], expected_subtotal)  # Assert Subtotal
+
+        # Debugging output
+        print("\n--- Test Result ---")
+        print(f"Returned Subtotal: {result['total'] - result['vat']}")
+        print(f"Returned VAT: {result['vat']}")
+        print(f"Returned Total: {result['total']}")
+        print("-------------------\n")
